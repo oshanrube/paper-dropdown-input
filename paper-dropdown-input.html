@@ -441,6 +441,14 @@ respectively.
                     },
 
                     /**
+                     * The field for the label of the item
+                     */
+                    labelProperty: {
+                        type : String,
+                        value: ""
+                    },
+
+                    /**
                      * The filter function, executed each time 'items' or 'searchValue' changes
                      * The default function expects an array of strings or an array of
                      * objects containing the 'value' property
@@ -612,8 +620,8 @@ respectively.
                     if (!selectedItem) {
                         value = '';
                     } else {
-            displayValue = selectedItem.textContent.trim() || selectedItem.label;
-            value = selectedItem.label || selectedItem.getAttribute('label') || selectedItem.textContent.trim();
+                        displayValue = selectedItem.dataItem[this.labelProperty] ||selectedItem.textContent.trim() || selectedItem.label;
+                        value        = selectedItem.dataItem || selectedItem.label || selectedItem.getAttribute('label') || selectedItem.textContent.trim();
                     }
                     if (!value && this.selectedItemLabel) { // selected item re-appeared in _filteredItems
                         return;
