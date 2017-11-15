@@ -74,11 +74,13 @@ respectively.
             :host([no-search]) [search-bar] {
                 display: none;
             }
+
             :host ::content hr {
                 border-top: 1px solid var(--disabled-text-color);
                 border-bottom: none;
                 opacity: .5;
             }
+
             .dropdown-content > paper-input {
                 padding-left: 1em;
                 --paper-input-container-input-color: black;
@@ -92,22 +94,27 @@ respectively.
                     padding: 0;
                 };
             }
+
             paper-menu-button {
                 --paper-input-container-input-color: var(--primary-text-color);
             }
+
             .dropdown-content > p {
                 padding-left: 1em;
             }
+
             [search-bar] {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
             }
+
             [search-bar] iron-input {
                 flex: 1;
                 display: flex;
                 flex-direction: row;
             }
+
             [search-bar] input {
                 border: none;
                 flex: 1;
@@ -116,9 +123,11 @@ respectively.
                 min-width: 0;
                 margin-bottom: 3px;
             }
+
             [search-bar] iron-icon {
                 margin-left: 1em;
             }
+
             [warning] {
                 background: #FFE0B2; /* paper-orange-100 */
                 margin: 0;
@@ -170,7 +179,7 @@ respectively.
                 <div search-bar on-tap="_stopEvent" disabled>
                     <iron-icon icon="search"></iron-icon>
                     <iron-input bind-value="{{searchValue}}">
-                        <input id="searchInput" value="{{value::input}}" is="iron-input" bind-value="{{searchValue}}">
+                        <input id="searchInput" value="{{ getLabel(value) }}" is="iron-input" bind-value="{{searchValue}}">
                     </iron-input>
                     <paper-icon-button on-click="clearSearch" icon="clear" alt="clear" title="clear"></paper-icon-button>
                 </div>
@@ -194,7 +203,7 @@ respectively.
         </paper-menu-button>
         <template id="menuTemplate">
             <template is="dom-repeat" items="[[items]]" as="item">
-                <paper-item data-item="[[item]]">[[item]]</paper-item>
+                <paper-item data-item="[[item]]">{{ getLabel(item) }}</paper-item>
             </template>
         </template>
     </template>
@@ -557,7 +566,6 @@ respectively.
                         return;
                     }
                     this._setValue(value);
-                    // this._setSelectedItemLabel(value);
                     this._setSelectedItemLabel(displayValue);
                 },
                 /**
@@ -673,19 +681,18 @@ respectively.
                     var displayValue = this.selectedItem && (this.selectedItem.dataItem[this.labelProperty] || this.selectedItem.textContent.trim() || this.selectedItem.label);
                     var value        = this.selectedItem && (this.selectedItem.dataItem || this.selectedItem.label || this.selectedItem.getAttribute('label') || displayValue);
                     if (selectedItemLabel && value != selectedItemLabel) {
-                        var index = this.$.menu.items.findIndex(function (item) {
-                            return
-                            item.dataItem[filterProperty] == selectedItemLabel ||
-                            item.label == selectedItemLabel ||
-                            item[filterProperty] == selectedItemLabel ||
-                            item.value == selectedItemLabel ||
-                            item == selectedItemLabel;
+                        var index = this.$.menu.items.findIndex(function (item, i) {
+                            return (item.dataItem === value ||
+                                (item.dataItem && item.dataItem[filterProperty] == selectedItemLabel) ||
+                                item.label == selectedItemLabel ||
+                                item[filterProperty] == selectedItemLabel ||
+                                item.value == selectedItemLabel ||
+                                item == selectedItemLabel);
                         });
                         index > -1 && this.$.menu.select(index);
                     }
                 },
                 _updateSelectedItemLabel  : function (items, value, filterProperty) {
-                    console.log('asd');
                     if (value === undefined) {
                         return;
                     }
@@ -746,6 +753,9 @@ respectively.
                 },
                 _showFreeInput            : function (freedom, searchValue) {
                     return freedom && searchValue != "";
+                },
+                getLabel                  : function (item) {
+                    return this.labelProperty !== "" ? item[this.labelProperty] : item;
                 }
             });
         })();
