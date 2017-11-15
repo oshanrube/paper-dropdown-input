@@ -753,11 +753,14 @@ respectively.
                 },
 
                 _updateSelectedItem: function (itemsLength, selectedItemLabel, filterProperty) {
-                    var displayValue = this.selectedItem && (this.selectedItem.textContent.trim() || this.selectedItem.label);
-                    var value        = this.selectedItem && (this.selectedItem.label || this.selectedItem.getAttribute('label') || displayValue);
+
+                    var displayValue = this.selectedItem && (this.selectedItem.dataItem[this.labelProperty] || this.selectedItem.textContent.trim() || this.selectedItem.label);
+                    var value        = this.selectedItem && (this.selectedItem.dataItem || this.selectedItem.label || this.selectedItem.getAttribute('label') || displayValue);
                     if (selectedItemLabel && value != selectedItemLabel) {
                         var index = this.$.menu.items.findIndex(function (item) {
-                            return item.label == selectedItemLabel ||
+                            return
+                                item.dataItem[filterProperty] == selectedItemLabel ||
+                                item.label == selectedItemLabel ||
                                 item[filterProperty] == selectedItemLabel ||
                                 item.value == selectedItemLabel ||
                                 item == selectedItemLabel;
