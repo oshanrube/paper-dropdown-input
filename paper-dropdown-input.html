@@ -238,9 +238,8 @@ respectively.
                      * @type {?Object}
                      */
                     selectedItem       : {
-                        type    : Object,
-                        notify  : true,
-                        readOnly: true
+                        type  : Object,
+                        notify: true
                     },
                     /**
                      * The value for this element that will be used when submitting in
@@ -248,7 +247,7 @@ respectively.
                      * as `selectedItemLabel`.
                      */
                     value              : {
-                        type    : String,
+                        type    : Object,
                         notify  : true,
                         readOnly: true
                     },
@@ -559,8 +558,8 @@ respectively.
                     if (!selectedItem) {
                         value = '';
                     } else {
-                        displayValue = selectedItem.dataItem[this.labelProperty] || selectedItem.textContent.trim() || selectedItem.label;
-                        value        = selectedItem.dataItem || selectedItem.label || selectedItem.getAttribute('label') || selectedItem.textContent.trim();
+                        displayValue = selectedItem[this.labelProperty] || selectedItem.dataItem[this.labelProperty] || selectedItem.textContent.trim() || selectedItem.label;
+                        value        = selectedItem.dataItem || (typeof selectedItem.getAttribute === 'function' && selectedItem.getAttribute('label')) || (selectedItem.textContent && selectedItem.textContent.trim()) || selectedItem;
                     }
                     if (!value && this.selectedItemLabel) { // selected item re-appeared in _filteredItems
                         return;
@@ -678,8 +677,8 @@ respectively.
                     this._focusSearch();
                 },
                 _updateSelectedItem       : function (itemsLength, selectedItemLabel, filterProperty) {
-                    var displayValue = this.selectedItem && (this.selectedItem.dataItem[this.labelProperty] || this.selectedItem.textContent.trim() || this.selectedItem.label);
-                    var value        = this.selectedItem && (this.selectedItem.dataItem || this.selectedItem.label || this.selectedItem.getAttribute('label') || displayValue);
+                    var displayValue = this.selectedItem && (this.selectedItem[this.labelProperty] || this.selectedItem.dataItem[this.labelProperty] || this.selectedItem.textContent.trim() || this.selectedItem.label);
+                    var value        = this.selectedItem && (this.selectedItem.dataItem || (typeof this.selectedItem.getAttribute === 'function' && this.selectedItem.getAttribute('label')) || (this.selectedItem.textContent && this.selectedItem.textContent.trim()) || this.selectedItem);
                     if (selectedItemLabel && value != selectedItemLabel) {
                         var index = this.$.menu.items.findIndex(function (item, i) {
                             return (item.dataItem === value ||
